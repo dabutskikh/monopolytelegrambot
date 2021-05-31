@@ -44,7 +44,7 @@ public class PlayerGame {
 
     @Nullable
     @Column(name = "current_money")
-    private Integer currentMoney;
+    private Integer currentMoney = 0;
 
     public PlayerGame(Player player, Game game) {
         this.id = new Id(player, game);

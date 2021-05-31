@@ -20,11 +20,11 @@ public class Player {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+//    @Column(name = "first_name")
+//    private String firstName;
+//
+//    @Column(name = "last_name")
+//    private String lastName;
 
     @OneToMany(
             orphanRemoval = true,
@@ -43,11 +43,18 @@ public class Player {
     )
     private List<PlayerGame> playerGames;
 
+    public Player(Long id, String username) {
+        this.id = id;
+        this.username = username;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+    }
+
     public Player(Long id, String username, String firstName, String lastName) {
         this.id = id;
         this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface PlayerService {
 
 //    Player findById(Long playerId);
 
-    Player saveOrUpdate(Long playerId, String username, String firstName, String lastName);
+    Player saveOrUpdate(Long playerId, String username);
 
     List<Player> getActivePlayersByGame(Game game);
 }

@@ -24,17 +24,20 @@ public class PlayerServiceImpl implements PlayerService {
 //    }
 
     @Override
-    public Player saveOrUpdate(Long playerId, String username, String firstName, String lastName) {
+    public Player saveOrUpdate(Long playerId, String username) {
+        if (username == null) {
+            username = "Noname (id " + playerId.toString() + ")";
+        }
         Optional<Player> playerOpt = playerRepository.findById(playerId);
         Player player;
         if (playerOpt.isPresent()) {
             player = playerOpt.get();
             player.setUsername(username);
-            player.setFirstName(firstName);
-            player.setLastName(lastName);
+//            player.setFirstName(firstName);
+//            player.setLastName(lastName);
             return playerRepository.saveAndFlush(player);
         } else {
-            player = new Player(playerId, username, firstName, lastName);
+            player = new Player(playerId, username);
         }
         return playerRepository.saveAndFlush(player);
     }

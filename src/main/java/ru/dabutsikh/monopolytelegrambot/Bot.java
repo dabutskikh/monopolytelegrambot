@@ -20,6 +20,7 @@ import ru.dabutsikh.monopolytelegrambot.service.interfaces.PlayerService;
 import ru.dabutsikh.monopolytelegrambot.service.interfaces.TransactionService;
 import ru.dabutsikh.monopolytelegrambot.util.Messages;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,20 +55,13 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         User user = update.getMessage().getFrom();
-        Player player = playerService.saveOrUpdate(user.getId(), user.getUserName(), user.getFirstName(), user.getLastName());
+        Player player = playerService.saveOrUpdate(user.getId(), user.getUserName());
         String command = update.getMessage().getText();
         try {
-            Pattern connectGamePattern = Pattern.compile("^/connect (\\d+)$");
             Matcher connectGameMatcher = Pattern.compile("^/connect (\\d+)$").matcher(command);
-
-            Pattern startMoneyPattern = Pattern.compile("^/startmoney (\\d+)$");
-            Matcher startMoneyMatcher = startMoneyPattern.matcher(command);
-
-            Pattern forwardMoneyPattern = Pattern.compile("^/forwardmoney (\\d+)$");
-            Matcher forwardMoneyMatcher = forwardMoneyPattern.matcher(command);
-
-            Pattern forwardMoneyTimePattern = Pattern.compile("^/forwardmoneytime (\\d+)$");
-            Matcher forwardMoneyTimeMatcher = forwardMoneyTimePattern.matcher(command);
+            Matcher startMoneyMatcher = Pattern.compile("^/setstartmoney (\\d+)$").matcher(command);
+            Matcher forwardMoneyMatcher = Pattern.compile("^/setforwardmoney (\\d+)$").matcher(command);
+            Matcher forwardMoneyTimeMatcher = Pattern.compile("^/setforwardmoneytime (\\d+)$").matcher(command);
 
             // Создание игры
             if ("/create".equals(command)) {
@@ -94,48 +88,54 @@ public class Bot extends TelegramLongPollingBot {
                 );
             // Старт игры
             } else if ("/start".equals(command)) {
-                PlayerGame playerGame = playerGameService.getProcessingGameByPlayer(player);
-                if (playerGame == null) {
-                    throw new RuntimeException("Вы не состоите ни в одной игре.");
+                Game game = playerGameService.startCreatedGame(player);
+                List<PlayerGame> playerGames = playerGameService.getActiveAndSpectatorPlayerGamesByGame(game);
+                for (PlayerGame playerGame : playerGames) {
+                    player = playerGame.getId().getPlayer();
+                    messages.sendMessage(player, "Игра началась");
                 }
-                Game game = playerGame.getId().getGame();
-                gameService.start(player, game);
-                messages.sendMessage(player,
-                        "Игра началась"
-                );
             // Завершение игры
             } else if ("/finish".equals(command)) {
-                PlayerGame playerGame = playerGameService.getProcessingGameByPlayer(player);
-                Game game = playerGame.getId().getGame();
-                gameService.finish(player, game);
-                messages.sendMessage(player,
-                        "Игра завершена"
-                );
+                Game game = playerGameService.finishGame(player);
+                List<PlayerGame> playerGames = playerGameService.getActiveAndSpectatorPlayerGamesByGame(game);
+                for (PlayerGame playerGame : playerGames) {
+                    player = playerGame.getId().getPlayer();
+                    messages.sendMessage(player, "Игра закончилась");
+                }
             // Установка начальной суммы денег
             } else if (startMoneyMatcher.find()) {
-                PlayerGame playerGame = playerGameService.getProcessingGameByPlayer(player);
-                Game game = playerGame.getId().getGame();
                 Integer startMoney = Integer.parseInt(startMoneyMatcher.group(1));
-                gameService.setStartMoney(player, game, startMoney);
-                messages.sendMessage(player,
-                        "Установлена начальная сумма денег: " + startMoney + ".");
+                Game game = playerGameService.setStartMoneyInCreatedGame(player, startMoney);
+                List<PlayerGame> playerGames = playerGameService.getActiveAndSpectatorPlayerGamesByGame(game);
+                for (PlayerGame playerGame : playerGames) {
+                    player = playerGame.getId().getPlayer();
+                    messages.sendMessage(player, "Установлена начальная сумма денег: " + startMoney + ".");
+                }
             // Установка суммы денег, выдаваемой после прохождения поля ВПЕРЕД
             } else if (forwardMoneyMatcher.find()) {
-                PlayerGame playerGame = playerGameService.getProcessingGameByPlayer(player);
-                Game game = playerGame.getId().getGame();
                 Integer forwardMoney = Integer.parseInt(forwardMoneyMatcher.group(1));
-                gameService.setForwardMoney(player, game, forwardMoney);
-                messages.sendMessage(player,
-                        "Установлена выдаваемая сумма денег при прохождении поля ВПЕРЕД: " + forwardMoney + ".");
+                Game game = playerGameService.setForwardMoneyInCreatedGame(player, forwardMoney);
+                List<PlayerGame> playerGames = playerGameService.getActiveAndSpectatorPlayerGamesByGame(game);
+                for (PlayerGame playerGame : playerGames) {
+                    player = playerGame.getId().getPlayer();
+                    messages.sendMessage(player, "Установлена выдаваемая сумма денег при прохождении поля ВПЕРЕД: " + forwardMoney + ".");
+                }
             // Установка времени, в течение которого производится выплата после прохождения поля ВПЕРЕД
             } else if (forwardMoneyTimeMatcher.find()) {
-                PlayerGame playerGame = playerGameService.getProcessingGameByPlayer(player);
-                Game game = playerGame.getId().getGame();
                 Integer forwardMoneyTime = Integer.parseInt(forwardMoneyTimeMatcher.group(1));
-                gameService.setForwardMoneyTime(player, game, forwardMoneyTime);
-                messages.sendMessage(player,
-                        "Установлено время, в течение которого производится выплата после прохождения поля ВПЕРЕД: " + forwardMoneyTime + " мин.");
+                Game game = playerGameService.setForwardMoneyTimeInCreatedGame(player, forwardMoneyTime);
+                List<PlayerGame> playerGames = playerGameService.getActiveAndSpectatorPlayerGamesByGame(game);
+                for (PlayerGame playerGame : playerGames) {
+                    player = playerGame.getId().getPlayer();
+                    messages.sendMessage(player,
+                            "Установлено время, в течение которого производится выплата после прохождения поля ВПЕРЕД: " + forwardMoneyTime + " мин."
+                    );
+                }
+            } else if (playerGameService.getProcessingGameByPlayer(player) != null) {
+
             }
+
+
         } catch (RuntimeException e) {
             messages.sendMessage(player, e.getMessage());
         }

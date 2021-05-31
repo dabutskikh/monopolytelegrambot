@@ -81,43 +81,53 @@ public class PlayerGameServiceImpl implements PlayerGameService {
     }
 
     @Override
-    public void setStartMoneyInCreatedGame(Player player, Integer startMoney) {
+    public Game startCreatedGame(Player player) {
         PlayerGame playerGame = getCreatedGameByPlayer(player);
         if (playerGame == null) {
             throw new RuntimeException("Вы не состоите ни в одной игре, находящейся на стадии создания");
         }
         Game game = playerGame.getId().getGame();
-        gameService.setStartMoney(player, game, startMoney);
+        return gameService.start(player, game);
     }
 
     @Override
-    public void setForwardMoneyInCreatedGame(Player player, Integer forwardMoney) {
+    public Game setStartMoneyInCreatedGame(Player player, Integer startMoney) {
         PlayerGame playerGame = getCreatedGameByPlayer(player);
         if (playerGame == null) {
             throw new RuntimeException("Вы не состоите ни в одной игре, находящейся на стадии создания");
         }
         Game game = playerGame.getId().getGame();
-        gameService.setForwardMoney(player, game, forwardMoney);
+        return gameService.setStartMoney(player, game, startMoney);
     }
 
     @Override
-    public void setForwardMoneyTimeInCreatedGame(Player player, Integer forwardMoneyTime) {
+    public Game setForwardMoneyInCreatedGame(Player player, Integer forwardMoney) {
         PlayerGame playerGame = getCreatedGameByPlayer(player);
         if (playerGame == null) {
             throw new RuntimeException("Вы не состоите ни в одной игре, находящейся на стадии создания");
         }
         Game game = playerGame.getId().getGame();
-        gameService.setForwardMoneyTime(player, game, forwardMoneyTime);
+        return gameService.setForwardMoney(player, game, forwardMoney);
     }
 
     @Override
-    public void finishGame(Player player) {
+    public Game setForwardMoneyTimeInCreatedGame(Player player, Integer forwardMoneyTime) {
+        PlayerGame playerGame = getCreatedGameByPlayer(player);
+        if (playerGame == null) {
+            throw new RuntimeException("Вы не состоите ни в одной игре, находящейся на стадии создания");
+        }
+        Game game = playerGame.getId().getGame();
+        return gameService.setForwardMoneyTime(player, game, forwardMoneyTime);
+    }
+
+    @Override
+    public Game finishGame(Player player) {
         PlayerGame playerGame = getCreatedOrProcessingGameByPlayer(player);
         if (playerGame == null) {
             throw new RuntimeException("Вы не состоите ни в одной незавершенной игре");
         }
         Game game = playerGame.getId().getGame();
-        gameService.finish(player, game);
+        return gameService.finish(player, game);
     }
 
     @Override
@@ -168,5 +178,16 @@ public class PlayerGameServiceImpl implements PlayerGameService {
     @Override
     public List<PlayerGame> getActivePlayerGamesByGame(Game game) {
         return playerGameRepository.getActivePlayerGamesByGameId(game.getId());
+    }
+
+    @Override
+    public List<PlayerGame> getActiveAndSpectatorPlayerGamesByGame(Game game) {
+        return playerGameRepository.getActiveAndSpectatorPlayerGamesByGameId(game.getId());
+    }
+
+    @Override
+    public void setState(PlayerGame playerGame, PlayerGameState state) {
+        playerGame.setState(state);
+        playerGameRepository.saveAndFlush(playerGame);
     }
 }

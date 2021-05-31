@@ -62,4 +62,11 @@ public interface PlayerGameRepository extends JpaRepository<PlayerGame, PlayerGa
             "WHERE g.id = ?1 AND pg.status = 'ACTIVE'",
             nativeQuery = true)
     List<PlayerGame> getActivePlayerGamesByGameId(Long gameId);
+
+    @Query(value =
+            "SELECT pg.* FROM game g " +
+                    "INNER JOIN player_game pg ON pg.game_id = g.id " +
+                    "WHERE g.id = ?1 AND pg.status IN ('ACTIVE', 'SPECTATOR')",
+            nativeQuery = true)
+    List<PlayerGame> getActiveAndSpectatorPlayerGamesByGameId(Long gameId);
 }

@@ -9,13 +9,13 @@ public interface GameService {
 
     Game create(Player creator);
 
-    void start(Player creator, Game game);
+    Game start(Player creator, Game game);
 
-    void finish(Player creator, Game game);
+    Game finish(Player creator, Game game);
 
-    void setStartMoney(Player creator, Game game, Integer startMoney);
+    Game setStartMoney(Player creator, Game game, Integer startMoney);
 
-    void setForwardMoney(Player creator, Game game, Integer forwardMoney);
+    Game setForwardMoney(Player creator, Game game, Integer forwardMoney);
 
-    void setForwardMoneyTime(Player creator, Game game, Integer forwardMoneyTime);
+    Game setForwardMoneyTime(Player creator, Game game, Integer forwardMoneyTime);
 }

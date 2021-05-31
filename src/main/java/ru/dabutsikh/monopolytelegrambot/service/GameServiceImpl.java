@@ -3,10 +3,7 @@ package ru.dabutsikh.monopolytelegrambot.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.dabutsikh.monopolytelegrambot.config.GameConfig;
-import ru.dabutsikh.monopolytelegrambot.model.Game;
-import ru.dabutsikh.monopolytelegrambot.model.GameStatus;
-import ru.dabutsikh.monopolytelegrambot.model.Player;
-import ru.dabutsikh.monopolytelegrambot.model.PlayerGame;
+import ru.dabutsikh.monopolytelegrambot.model.*;
 import ru.dabutsikh.monopolytelegrambot.repository.GameRepository;
 import ru.dabutsikh.monopolytelegrambot.service.interfaces.GameService;
 import ru.dabutsikh.monopolytelegrambot.service.interfaces.PlayerGameService;
@@ -50,7 +47,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void start(Player creator, Game game) {
+    public Game start(Player creator, Game game) {
         if (!game.getCreator().equals(creator)) {
             throw new RuntimeException("Вы не являетесь создателем игры с id " + game.getId());
         }
@@ -69,14 +66,17 @@ public class GameServiceImpl implements GameService {
         activePlayerGames.forEach(
                 playerGame -> playerGameService.chargeMoney(playerGame, game.getStartMoney())
         );
+        activePlayerGames.forEach(
+                playerGame -> playerGameService.setState(playerGame, PlayerGameState.DEFAULT)
+        );
         game.setStatus(GameStatus.IN_PROCESS);
         game.setDateBegin(new Date());
-        gameRepository.saveAndFlush(game);
+        return gameRepository.saveAndFlush(game);
     }
 
     @Override
     // todo: сделать сохранение победителя
-    public void finish(Player creator, Game game) {
+    public Game finish(Player creator, Game game) {
         if (!game.getCreator().equals(creator)) {
             throw new RuntimeException("Вы не являетесь создателем игры с id " + game.getId());
         }
@@ -85,11 +85,11 @@ public class GameServiceImpl implements GameService {
         }
         game.setStatus(GameStatus.FINISHED);
         game.setDateEnd(new Date());
-        gameRepository.saveAndFlush(game);
+        return gameRepository.saveAndFlush(game);
     }
 
     @Override
-    public void setStartMoney(Player creator, Game game, Integer startMoney) {
+    public Game setStartMoney(Player creator, Game game, Integer startMoney) {
         if (!game.getCreator().equals(creator)) {
             throw new RuntimeException("Вы не являетесь создателем игры с id " + game.getId());
         }
@@ -97,11 +97,11 @@ public class GameServiceImpl implements GameService {
             throw new RuntimeException("Игра уже начата");
         }
         game.setStartMoney(startMoney);
-        gameRepository.saveAndFlush(game);
+        return gameRepository.saveAndFlush(game);
     }
 
     @Override
-    public void setForwardMoney(Player creator, Game game, Integer forwardMoney) {
+    public Game setForwardMoney(Player creator, Game game, Integer forwardMoney) {
         if (!game.getCreator().equals(creator)) {
             throw new RuntimeException("Вы не являетесь создателем игры с id " + game.getId());
         }
@@ -109,11 +109,11 @@ public class GameServiceImpl implements GameService {
             throw new RuntimeException("Игра уже начата");
         }
         game.setStartMoney(forwardMoney);
-        gameRepository.saveAndFlush(game);
+        return gameRepository.saveAndFlush(game);
     }
 
     @Override
-    public void setForwardMoneyTime(Player creator, Game game, Integer forwardMoneyTime) {
+    public Game setForwardMoneyTime(Player creator, Game game, Integer forwardMoneyTime) {
         if (!game.getCreator().equals(creator)) {
             throw new RuntimeException("Вы не являетесь создателем игры с id " + game.getId());
         }
@@ -121,6 +121,6 @@ public class GameServiceImpl implements GameService {
             throw new RuntimeException("Игра уже начата");
         }
         game.setStartMoney(forwardMoneyTime);
-        gameRepository.saveAndFlush(game);
+        return gameRepository.saveAndFlush(game);
     }
 }
