@@ -13,6 +13,7 @@ import javax.persistence.*;
 public class Player {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
     Long id;
 
