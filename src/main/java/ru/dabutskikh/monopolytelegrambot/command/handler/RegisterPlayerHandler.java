@@ -1,20 +1,30 @@
 package ru.dabutskikh.monopolytelegrambot.command.handler;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
+import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
+import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 
 @Component
+@RequiredArgsConstructor
 public class RegisterPlayerHandler implements TextCommandHandler {
 
+    private final PlayerService playerService;
+
+    @Transactional
     @Override
-    public void execute(CommandContext context) {
-        System.out.println("RegisterPlayerHandler:");
-        System.out.println(context.getUserId());
-        System.out.println(context.getUsername());
-        System.out.println(context.getLastName());
-        System.out.println(context.getFirstName());
-        System.out.println(context.getText());
+    public String execute(CommandContext context) {
+        PlayerDTO player = PlayerDTO.builder()
+                .telegramId(context.getUserId())
+                .username(context.getUsername())
+                .lastName(context.getLastName())
+                .firstName(context.getFirstName())
+                .build();
+        playerService.create(player);
+        return "Вы зарегистированы!";
     }
 
     @Override

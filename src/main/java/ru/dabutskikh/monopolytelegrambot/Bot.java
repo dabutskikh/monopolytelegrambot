@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -45,8 +46,8 @@ public class Bot extends TelegramLongPollingBot {
                 .firstName(user.getFirstName())
                 .text(message.getText())
                 .build();
-        boolean parse = commandParser.parse(context);
-        System.out.println(parse);
+        String result = commandParser.parse(context);
+        this.execute(SendMessage.builder().chatId(context.getUserId()).text(result).build());
     }
 
     @Override

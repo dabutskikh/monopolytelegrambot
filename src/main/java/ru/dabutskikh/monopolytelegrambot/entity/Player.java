@@ -2,7 +2,9 @@ package ru.dabutskikh.monopolytelegrambot.entity;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -10,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "player")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
+@NoArgsConstructor
 public class Player {
 
     @Id
@@ -36,5 +39,9 @@ public class Player {
     Long currentPlayerGameId;
 
     @Column(name = "tx_current_id")
-    Long currentTx;
+    Long currentTxId;
+
+    public Player(Long id) {
+        this.id = id;
+    }
 }

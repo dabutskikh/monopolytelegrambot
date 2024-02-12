@@ -1,8 +1,8 @@
 package ru.dabutskikh.monopolytelegrambot.command;
 
 import org.springframework.stereotype.Component;
-import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
 import ru.dabutskikh.monopolytelegrambot.command.handler.TextCommandHandler;
+import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
 import ru.dabutskikh.monopolytelegrambot.utils.Provider;
 
 import java.util.HashMap;

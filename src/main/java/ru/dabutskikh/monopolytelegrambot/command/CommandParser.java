@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.dabutskikh.monopolytelegrambot.command.handler.TextCommandHandler;
 import ru.dabutskikh.monopolytelegrambot.command.type.TextCommand;
+import ru.dabutskikh.monopolytelegrambot.exception.UserException;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
@@ -16,15 +15,17 @@ public class CommandParser {
     private final CommandProvider commandProvider;
     private final List<TextCommand> commands;
 
-    public boolean parse(CommandContext context) {
-        for (TextCommand textCommand : commands) {
-            Matcher matcher = Pattern.compile(textCommand.getPattern()).matcher(context.getText());
-            if (matcher.find()) {
-                TextCommandHandler commandHandler = commandProvider.getByKey(textCommand.getType());
-                commandHandler.execute(context);
-                return true;
+    public String parse(CommandContext context) {
+        try {
+            for (TextCommand textCommand : commands) {
+                if (textCommand.isCommand(context.getText())) {
+                    TextCommandHandler commandHandler = commandProvider.getByKey(textCommand.getType());
+                    return commandHandler.execute(context);
+                }
             }
+            throw new UserException("Некорректная комманда. Попробуйте снова");
+        } catch (UserException e) {
+            return e.getMessage();
         }
-        return false;
     }
 }
