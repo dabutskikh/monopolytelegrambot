@@ -12,8 +12,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.CommandParser;
 import ru.dabutskikh.monopolytelegrambot.config.bot.BotConfig;
+import ru.dabutskikh.monopolytelegrambot.response.Response;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
@@ -46,8 +48,14 @@ public class Bot extends TelegramLongPollingBot {
                 .firstName(user.getFirstName())
                 .text(message.getText())
                 .build();
-        String result = commandParser.parse(context);
-        this.execute(SendMessage.builder().chatId(context.getUserId()).text(result).build());
+        List<Response> responses = commandParser.parse(context);
+        for (Response response : responses) {
+            execute(SendMessage.builder()
+                    .chatId(response.getTelegramId())
+                    .text(response.getMessage())
+                    .replyMarkup(response.getKeyboard())
+                    .build());
+        }
     }
 
     @Override

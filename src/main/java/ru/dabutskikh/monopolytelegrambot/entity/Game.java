@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.GameStatus;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "game")
@@ -27,6 +28,12 @@ public class Game {
     @Column(name = "game_status")
     @Enumerated(EnumType.ORDINAL)
     GameStatus status;
+
+    @Column(name = "game_start_money")
+    BigDecimal startMoney;
+
+    @Column(name = "game_forward_money")
+    BigDecimal forwardMoney;
 
     public Game(Long id) {
         this.id = id;

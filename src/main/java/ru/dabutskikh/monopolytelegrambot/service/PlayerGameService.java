@@ -38,7 +38,7 @@ public class PlayerGameService {
     public void checkNotExistsPlayerGame(Long playerId, Long gameId) {
         Optional<PlayerGame> playerGameOpt = playerGameRepository.findByPlayerIdAndGameId(playerId, gameId);
         if (playerGameOpt.isPresent()) {
-            throw new UserException("Вы уже состоите в игре с ID " + gameId);
+            throw new UserException("Вы уже состоите (состояли) в игре с ID " + gameId + "!");
         }
     }
 }
