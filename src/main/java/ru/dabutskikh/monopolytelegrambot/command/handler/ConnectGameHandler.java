@@ -2,6 +2,7 @@ package ru.dabutskikh.monopolytelegrambot.command.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
@@ -23,6 +24,7 @@ public class ConnectGameHandler implements TextCommandHandler {
     private final GameService gameService;
     private final PlayerService playerService;
 
+    @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
         Matcher matcher = Pattern.compile("^/connect (\\d+)$").matcher(context.getText());
@@ -41,14 +43,13 @@ public class ConnectGameHandler implements TextCommandHandler {
         String toOtherPlayersMessage = "Игрок " + username + " присоединился и игре";
         return players.stream()
                 .map(PlayerDTO::getTelegramId)
-                .map(playerId ->
-                        new Response(
-                                playerId,
-                                Objects.equals(playerId, context.getUserId())
-                                        ? toYourselfMessage
-                                        : toOtherPlayersMessage,
-                                new ReplyKeyboardRemove(true))
-                ).toList();
+                .map(playerId -> new Response(
+                        playerId,
+                        Objects.equals(playerId, context.getUserId())
+                                ? toYourselfMessage
+                                : toOtherPlayersMessage,
+                        new ReplyKeyboardRemove(true)
+                )).toList();
     }
 
     @Override

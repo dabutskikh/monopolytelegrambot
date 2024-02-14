@@ -1,6 +1,7 @@
 package ru.dabutskikh.monopolytelegrambot.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dabutskikh.monopolytelegrambot.config.game.GameConfig;
@@ -10,9 +11,12 @@ import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.Game;
 import ru.dabutskikh.monopolytelegrambot.entity.Player;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.GameStatus;
+import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameState;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
 import ru.dabutskikh.monopolytelegrambot.repository.GameRepository;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -55,6 +59,7 @@ public class GameService {
                 .build();
     }
 
+    @Transactional
     public void joinToGame(Long telegramId, Long gameId) {
         Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(telegramId);
         if (playerOpt.isEmpty()) {
@@ -81,5 +86,43 @@ public class GameService {
         player.setCurrentGameId(gameId);
         player.setCurrentPlayerGameId(playerGame.getId());
         playerService.update(player);
+    }
+
+    @Transactional
+    public GameDTO startGame(Long telegramId) {
+        Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(telegramId);
+        if (playerOpt.isEmpty()) {
+            throw new UserException("Вы не зарегистрированы!");
+        }
+        PlayerDTO owner = playerOpt.get();
+        if (owner.getCurrentGameId() == null) {
+            throw new UserException("В данный момент вы не состоите ни в одной игре!");
+        }
+        Optional<Game> gameOpt = gameRepository.findById(owner.getCurrentGameId());
+        if (gameOpt.isEmpty()) {
+            throw new UserException("Игра с ID " + owner.getCurrentGameId() + " не найдена!");
+        }
+        Game game = gameOpt.get();
+        if (!GameStatus.CREATED.equals(game.getStatus())) {
+            throw new UserException("Для старта игра должна быть в статусе \"Создана\"!");
+        }
+        if (!Objects.equals(game.getOwner().getId(), owner.getId())) {
+            throw new UserException("Вы не являетесь создатаелем игры с ID " + game.getId() + "!");
+        }
+        List<PlayerDTO> players = playerService.findByCurrentGameId(game.getId());
+        if (players.size() < 2) {
+            throw new UserException("В игре должно быть не менее двух игроков!");
+        }
+        for (PlayerDTO player : players) {
+            PlayerGameDTO playerGame = playerGameService.getById(player.getCurrentPlayerGameId());
+            playerGame.setMoney(game.getStartMoney());
+            playerGame.setState(PlayerGameState.DEFAULT);
+            playerGameService.update(playerGame);
+        }
+        game.setStatus(GameStatus.IN_PROCESS);
+        gameRepository.saveAndFlush(game);
+        GameDTO gameDTO = new GameDTO();
+        BeanUtils.copyProperties(game, gameDTO);
+        return gameDTO;
     }
 }

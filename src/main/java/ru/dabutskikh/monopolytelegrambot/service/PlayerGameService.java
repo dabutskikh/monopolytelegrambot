@@ -1,8 +1,10 @@
 package ru.dabutskikh.monopolytelegrambot.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.Game;
 import ru.dabutskikh.monopolytelegrambot.entity.Player;
@@ -40,5 +42,25 @@ public class PlayerGameService {
         if (playerGameOpt.isPresent()) {
             throw new UserException("Вы уже состоите (состояли) в игре с ID " + gameId + "!");
         }
+    }
+
+    @Transactional
+    public PlayerGameDTO update(PlayerGameDTO dto) {
+        PlayerGame entity = playerGameRepository.findById(dto.getId())
+                .orElseThrow(() -> new UserException("Записи с ID " + dto.getId() + " не существует!"));
+        BeanUtils.copyProperties(dto, entity);
+        entity.setPlayer(new Player(dto.getPlayerId()));
+        entity.setGame(new Game(dto.getGameId()));
+        playerGameRepository.saveAndFlush(entity);
+        return dto;
+    }
+
+    public PlayerGameDTO getById(Long id) {
+        PlayerGame entity = playerGameRepository.findById(id).orElseThrow(() -> new UserException("Записи с ID " + id + " не существует!"));
+        PlayerGameDTO dto = new PlayerGameDTO();
+        BeanUtils.copyProperties(entity, dto);
+        dto.setPlayerId(entity.getPlayer().getId());
+        dto.setGameId(entity.getGame().getId());
+        return dto;
     }
 }
