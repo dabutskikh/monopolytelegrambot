@@ -1,9 +1,6 @@
 package ru.dabutskikh.monopolytelegrambot.response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 

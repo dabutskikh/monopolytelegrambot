@@ -50,11 +50,13 @@ public class Bot extends TelegramLongPollingBot {
                 .build();
         List<Response> responses = commandParser.parse(context);
         for (Response response : responses) {
-            execute(SendMessage.builder()
+            SendMessage.SendMessageBuilder messageBuilder = SendMessage.builder()
                     .chatId(response.getTelegramId())
-                    .text(response.getMessage())
-                    .replyMarkup(response.getKeyboard())
-                    .build());
+                    .text(response.getMessage());
+            if (response.getKeyboard() != null) {
+                messageBuilder.replyMarkup(response.getKeyboard());
+            }
+            execute(messageBuilder.build());
         }
     }
 
