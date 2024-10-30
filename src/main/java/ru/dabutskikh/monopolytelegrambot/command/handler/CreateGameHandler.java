@@ -22,7 +22,7 @@ public class CreateGameHandler implements TextCommandHandler {
     @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
-        GameDTO game = gameService.create(GameDTO.builder().ownerTelegramId(context.getUserId()).build());
+        GameDTO game = gameService.create(GameDTO.builder().ownerId(context.getUserId()).build());
         return Collections.singletonList(new Response(context.getUserId(), "Игра с ID " + game.getId() + " создана", new ReplyKeyboardRemove(true)));
     }
 

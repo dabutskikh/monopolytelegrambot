@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class GameDTO {
 
-    Long ownerTelegramId;
+    Long ownerId;
     Long id;
     GameStatus status;
     BigDecimal startMoney;

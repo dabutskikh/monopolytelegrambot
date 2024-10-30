@@ -3,10 +3,10 @@ package ru.dabutskikh.monopolytelegrambot.command.handler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
 import ru.dabutskikh.monopolytelegrambot.config.game.GameConfig;
+import ru.dabutskikh.monopolytelegrambot.dto.GameDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.TxDTO;
@@ -17,12 +17,12 @@ import ru.dabutskikh.monopolytelegrambot.entity.enums.TxType;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
 import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
+import ru.dabutskikh.monopolytelegrambot.service.GameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 import ru.dabutskikh.monopolytelegrambot.service.TxService;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +34,7 @@ public class GetForwardMoneyHandler implements TextCommandHandler {
     private final PlayerService playerService;
     private final PlayerGameService playerGameService;
     private final TxService txService;
-    private final GameConfig gameConfig;
+    private final GameService gameService;
 
     @Override
     public CommandType getKey() {
@@ -55,7 +55,8 @@ public class GetForwardMoneyHandler implements TextCommandHandler {
         if (!playerGameDto.getState().equals(PlayerGameState.DEFAULT)) {
             throw new UserException("Выполнение операции в данный момент невозможно, так как не закончена предыдущая");
         }
-        BigDecimal updatedMoney = playerGameDto.getMoney().add(gameConfig.getForwardMoney());
+        GameDTO gameDto = gameService.getById(playerGameDto.getGameId());
+        BigDecimal updatedMoney = playerGameDto.getMoney().add(gameDto.getForwardMoney());
         playerGameDto.setMoney(updatedMoney);
         playerGameService.update(playerGameDto);
         txService.create(TxDTO.builder()
@@ -64,7 +65,7 @@ public class GetForwardMoneyHandler implements TextCommandHandler {
                 .status(TxStatus.COMPLETED)
                 .ownerId(playerDto.getId())
                 .targetId(playerDto.getId())
-                .amount(gameConfig.getForwardMoney())
+                .amount(gameDto.getForwardMoney())
                 .build());
 
         List<PlayerDTO> players = playerService.findByCurrentGameId(playerDto.getCurrentGameId());

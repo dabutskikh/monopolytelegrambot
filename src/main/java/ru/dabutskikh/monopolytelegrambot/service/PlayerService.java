@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
 
-    @Transactional
     public void create(PlayerDTO dto) {
         checkNotExistsPlayerByTelegramId(dto.getTelegramId());
         Player entity = new Player();
@@ -55,7 +55,6 @@ public class PlayerService {
         );
     }
 
-    @Transactional
     public PlayerDTO update(PlayerDTO dto) {
         Player entity = playerRepository.findById(dto.getId())
                 .orElseThrow(() -> new UserException("Игрока с указанным идентификатором не существует"));

@@ -16,12 +16,12 @@ import ru.dabutskikh.monopolytelegrambot.repository.PlayerGameRepository;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PlayerGameService {
 
     private final PlayerGameRepository playerGameRepository;
 
-    @Transactional
     public PlayerGameDTO create(PlayerGameDTO dto) {
         checkNotExistsPlayerGame(dto.getPlayerId(), dto.getGameId());
         PlayerGame entity = new PlayerGame();
@@ -44,7 +44,6 @@ public class PlayerGameService {
         }
     }
 
-    @Transactional
     public PlayerGameDTO update(PlayerGameDTO dto) {
         PlayerGame entity = playerGameRepository.findById(dto.getId())
                 .orElseThrow(() -> new UserException("Записи с ID " + dto.getId() + " не существует!"));

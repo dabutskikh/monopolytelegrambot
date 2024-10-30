@@ -2,6 +2,7 @@ package ru.dabutskikh.monopolytelegrambot.command.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
@@ -59,14 +60,14 @@ public class TransferToBankHandler implements TextCommandHandler {
                 .build());
         playerDto.setCurrentTxId(txId);
         playerService.update(playerDto);
-        playerGameDto.setState(PlayerGameState.SELECT_MONEY_AMOUNT_FROM_BANK);
+        playerGameDto.setState(PlayerGameState.SELECT_MONEY_AMOUNT_TO_BANK);
         playerGameService.update(playerGameDto);
         return Collections.singletonList(new Response(context.getUserId(),
                 """
                         Перевод в банк
                         Введите сумму
                         """,
-                new ReplyKeyboardRemove()
+                new ReplyKeyboardRemove(true)
         ));
     }
 }

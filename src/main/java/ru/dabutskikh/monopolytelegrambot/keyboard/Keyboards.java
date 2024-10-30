@@ -32,7 +32,7 @@ public class Keyboards {
     public static ReplyKeyboard getConfirmKeyboard() {
         return new ReplyKeyboardMarkup(
                 Collections.singletonList(new KeyboardRow(List.of(
-                        new KeyboardButton("OK"),
+                        new KeyboardButton("ОК"),
                         new KeyboardButton("Отмена")
                 ))),
                 true, true, false, "Подтвердите операцию", true

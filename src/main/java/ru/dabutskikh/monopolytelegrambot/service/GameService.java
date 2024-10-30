@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GameService {
 
@@ -28,9 +29,8 @@ public class GameService {
     private final PlayerGameService playerGameService;
     private final GameConfig gameConfig;
 
-    @Transactional
     public GameDTO create(GameDTO dto) {
-        Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(dto.getOwnerTelegramId());
+        Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(dto.getOwnerId());
         if (playerOpt.isEmpty()) {
             throw new UserException("Вы не зарегистрированы!");
         }
@@ -55,11 +55,10 @@ public class GameService {
         playerService.update(player);
         return GameDTO.builder()
                 .id(entity.getId())
-                .ownerTelegramId(player.getId())
+                .ownerId(player.getId())
                 .build();
     }
 
-    @Transactional
     public void joinToGame(Long telegramId, Long gameId) {
         Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(telegramId);
         if (playerOpt.isEmpty()) {
@@ -88,7 +87,6 @@ public class GameService {
         playerService.update(player);
     }
 
-    @Transactional
     public GameDTO startGame(Long telegramId) {
         Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(telegramId);
         if (playerOpt.isEmpty()) {
@@ -124,5 +122,13 @@ public class GameService {
         GameDTO gameDTO = new GameDTO();
         BeanUtils.copyProperties(game, gameDTO);
         return gameDTO;
+    }
+
+    public GameDTO getById(Long id) {
+        Game entity = gameRepository.findById(id).orElseThrow(() -> new UserException("Записи с ID " + id + " не существует!"));
+        GameDTO dto = new GameDTO();
+        BeanUtils.copyProperties(entity, dto);
+        dto.setOwnerId(entity.getOwner().getId());
+        return dto;
     }
 }
