@@ -75,8 +75,7 @@ public class GetForwardMoneyHandler implements TextCommandHandler {
                         """,
                 updatedMoney
         );
-        String toOtherPlayersMessage = "Игрок " + username + " прошел поле ВПЕРЕД.";
-//        throw new UserException("Gabella");
+        String toOtherPlayersMessage = "Игрок " + username + " прошел поле ВПЕРЕД";
         return players.stream()
                 .map(PlayerDTO::getTelegramId)
                 .map(playerId -> new Response(

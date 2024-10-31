@@ -59,6 +59,14 @@ public class GameService {
                 .build();
     }
 
+    public void update(GameDTO dto) {
+        Game entity = gameRepository.findById(dto.getId())
+                .orElseThrow(() -> new UserException("Записи с ID " + dto.getId() + " не существует!"));
+        BeanUtils.copyProperties(dto, entity);
+        entity.setOwner(new Player(dto.getOwnerId()));
+        gameRepository.saveAndFlush(entity);
+    }
+
     public void joinToGame(Long telegramId, Long gameId) {
         Optional<PlayerDTO> playerOpt = playerService.findByTelegramId(telegramId);
         if (playerOpt.isEmpty()) {
