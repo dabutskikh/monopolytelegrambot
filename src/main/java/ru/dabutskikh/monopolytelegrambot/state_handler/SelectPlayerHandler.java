@@ -32,10 +32,18 @@ public class SelectPlayerHandler implements PlayerGameStateHandler {
     @Override
     public List<Response> execute(GameMoveContext context) {
         Long gameId = context.getPlayer().getCurrentGameId();
-        PlayerDTO targenPlayerDto = playerService.findActiveGamePlayers(gameId).stream()
+        List<PlayerDTO> activePlayers = playerService.findActiveGamePlayers(gameId);
+        PlayerDTO targenPlayerDto = activePlayers.stream()
                 .filter(player -> player.getUsername().equals(context.getCommand().getText()))
                 .findFirst()
-                .orElseThrow(() -> new UserException("Игрок " + context.getCommand().getText() + " не найден"));
+                .orElseThrow(() -> new UserException(
+                        "Игрок " + context.getCommand().getText() + " не найден",
+                        Keyboards.getWithRows(activePlayers.stream()
+                                .filter(player -> !player.getId().equals(context.getPlayer().getId()))
+                                .map(PlayerDTO::getUsername)
+                                .toList()
+                        )
+                ));
         TxDTO txDto = txService.getById(context.getPlayer().getCurrentTxId());
         txDto.setTargetId(targenPlayerDto.getId());
         txService.update(txDto);

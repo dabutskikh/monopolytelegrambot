@@ -36,11 +36,11 @@ public class SelectMoneyToPlayerHandler implements PlayerGameStateHandler {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            throw new UserException("Введено некорректное значение");
+            throw new UserException("Введено некорректное значение суммы. Попройте еще раз");
         }
         TxDTO txDto = txService.getById(context.getPlayer().getCurrentTxId());
         if (amount.compareTo(context.getPlayerGame().getMoney()) > 0) {
-            throw new UserException("У вас недостаточно денег");
+            throw new UserException("У вас недостаточно денег. Введите другую сумму");
         }
         txDto.setAmount(amount);
         txService.update(txDto);

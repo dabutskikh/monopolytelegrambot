@@ -38,7 +38,7 @@ public class ConfirmToBankHandler implements PlayerGameStateHandler {
         List<Response> responses = switch (context.getCommand().getText()) {
             case "ОК" -> commitTx(context, txDto);
             case "Отмена" -> rollbackTx(context, txDto);
-            default -> throw new UserException("Некорректный ввод. Попробуйте еще раз");
+            default -> throw new UserException("Некорректный ввод. Попробуйте еще раз", Keyboards.getConfirmKeyboard());
         };
         PlayerDTO playerDto = context.getPlayer();
         playerDto.setCurrentTxId(null);

@@ -51,11 +51,14 @@ public class CommandParser {
                 throw new UserException("Вы наблюдате за игрой");
             }
             if (playerGameDto.getState().equals(PlayerGameState.DEFAULT)) {
-                throw new UserException("Выполнение операции в данный момент невозможно, так как не закончена предыдущая");
+                throw new UserException("Выберите действие", Keyboards.getDefault());
             }
             return stateProvider.getByKey(playerGameDto.getState()).execute(
                     GameMoveContext.builder().player(playerDto).playerGame(playerGameDto).command(context).build());
         } catch (UserException e) {
+            if (e.getKeyboard() != null) {
+                return Collections.singletonList(new Response(context.getUserId(), e.getMessage(), e.getKeyboard()));
+            }
             return Collections.singletonList(new Response(context.getUserId(), e.getMessage(), Keyboards.remove()));
         }
     }

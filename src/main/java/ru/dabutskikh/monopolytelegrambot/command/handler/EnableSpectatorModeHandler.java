@@ -53,7 +53,7 @@ public class EnableSpectatorModeHandler implements TextCommandHandler {
                     Ваш баланс: %s
                     """, 
                     money
-            ));
+            ), Keyboards.getDefault());
         }
         playerGameDto.setStatus(PlayerGameStatus.DISABLED);
         playerGameDto.setState(null);
