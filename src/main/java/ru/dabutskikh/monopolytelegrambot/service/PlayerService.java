@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.Player;
+import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameStatus;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
 import ru.dabutskikh.monopolytelegrambot.repository.PlayerRepository;
 
@@ -65,6 +66,17 @@ public class PlayerService {
 
     public List<PlayerDTO> findByCurrentGameId(Long gameId) {
         List<Player> entities = playerRepository.findByCurrentGameId(gameId);
+        return entities.stream()
+                .map(player -> {
+                    PlayerDTO dto = new PlayerDTO();
+                    BeanUtils.copyProperties(player, dto);
+                    return dto;
+                })
+                .toList();
+    }
+
+    public List<PlayerDTO> findActiveGamePlayers(Long gameId) {
+        List<Player> entities = playerRepository.findGamePlayersByStatus(gameId, PlayerGameStatus.ACTIVE);
         return entities.stream()
                 .map(player -> {
                     PlayerDTO dto = new PlayerDTO();

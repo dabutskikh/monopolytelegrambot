@@ -33,7 +33,6 @@ public class CommandParser {
     private final PlayerService playerService;
     private final PlayerGameService playerGameService;
 
-    @Transactional
     public List<Response> parse(CommandContext context) {
         try {
             for (TextCommand textCommand : commands) {

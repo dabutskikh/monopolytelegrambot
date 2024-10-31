@@ -31,9 +31,4 @@ public class DataSourceConfig {
         dataSource.setDriverClassName(driverClassName);
         return dataSource;
     }
-
-//    @Bean
-//    DataSourceTransactionManager transactionManager(DataSource dataSource) {
-//        return new DataSourceTransactionManager(dataSource);
-//    }
 }

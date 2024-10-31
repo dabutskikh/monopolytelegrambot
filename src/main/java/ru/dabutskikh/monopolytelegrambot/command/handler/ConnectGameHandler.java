@@ -24,7 +24,6 @@ public class ConnectGameHandler implements TextCommandHandler {
     private final GameService gameService;
     private final PlayerService playerService;
 
-    @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
         Matcher matcher = Pattern.compile("^/connect (\\d+)$").matcher(context.getText());
@@ -40,7 +39,7 @@ public class ConnectGameHandler implements TextCommandHandler {
                 .findFirst()
                 .orElseThrow(() -> new UserException("Игрок не найден"));
         String toYourselfMessage = "Вы присоединились к игре с ID " + gameId;
-        String toOtherPlayersMessage = "Игрок " + username + " присоединился и игре";
+        String toOtherPlayersMessage = "Игрок " + username + " присоединился к игре";
         return players.stream()
                 .map(PlayerDTO::getTelegramId)
                 .map(playerId -> new Response(
