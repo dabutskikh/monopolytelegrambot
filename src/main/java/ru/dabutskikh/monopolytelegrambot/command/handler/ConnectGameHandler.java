@@ -8,6 +8,7 @@ import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
+import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.GameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
@@ -47,7 +48,7 @@ public class ConnectGameHandler implements TextCommandHandler {
                         Objects.equals(playerId, context.getUserId())
                                 ? toYourselfMessage
                                 : toOtherPlayersMessage,
-                        new ReplyKeyboardRemove(true)
+                        Keyboards.remove()
                 )).toList();
     }
 

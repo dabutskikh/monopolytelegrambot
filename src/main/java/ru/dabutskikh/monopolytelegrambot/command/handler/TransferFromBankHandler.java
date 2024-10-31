@@ -13,6 +13,7 @@ import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameStatus;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.TxStatus;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.TxType;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
+import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
@@ -64,7 +65,7 @@ public class TransferFromBankHandler implements TextCommandHandler {
                         Получение денег из банка
                         Введите сумму
                         """,
-                new ReplyKeyboardRemove(true)
+                Keyboards.remove()
         ));
     }
 }

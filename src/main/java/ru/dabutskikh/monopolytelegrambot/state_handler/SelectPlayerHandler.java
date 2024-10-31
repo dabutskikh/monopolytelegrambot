@@ -2,12 +2,12 @@ package ru.dabutskikh.monopolytelegrambot.state_handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.TxDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameState;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
+import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
@@ -49,7 +49,7 @@ public class SelectPlayerHandler implements PlayerGameStateHandler {
                         """,
                         targenPlayerDto.getUsername()
                 ),
-                new ReplyKeyboardRemove(true)
+                Keyboards.remove()
         ));
     }
 }

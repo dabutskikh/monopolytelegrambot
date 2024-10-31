@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRem
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
+import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 
@@ -19,7 +20,6 @@ public class RegisterPlayerHandler implements TextCommandHandler {
 
     private final PlayerService playerService;
 
-    @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
         PlayerDTO player = PlayerDTO.builder()
@@ -29,7 +29,7 @@ public class RegisterPlayerHandler implements TextCommandHandler {
                 .firstName(context.getFirstName())
                 .build();
         playerService.create(player);
-        return Collections.singletonList(new Response(context.getUserId(), "Вы зарегистированы!", new ReplyKeyboardRemove(true)));
+        return Collections.singletonList(new Response(context.getUserId(), "Вы зарегистированы!", Keyboards.remove()));
     }
 
     @Override

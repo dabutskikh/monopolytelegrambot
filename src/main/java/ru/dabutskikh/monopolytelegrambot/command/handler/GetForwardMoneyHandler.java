@@ -41,7 +41,6 @@ public class GetForwardMoneyHandler implements TextCommandHandler {
         return CommandType.GET_FORWARD_MONEY;
     }
 
-    @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
         PlayerDTO playerDto = playerService.findByTelegramId(context.getUserId())

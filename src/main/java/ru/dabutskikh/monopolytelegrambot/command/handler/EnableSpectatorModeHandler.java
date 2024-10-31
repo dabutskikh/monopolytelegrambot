@@ -11,10 +11,12 @@ import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameState;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameStatus;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
+import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,7 +33,6 @@ public class EnableSpectatorModeHandler implements TextCommandHandler {
         return CommandType.SPECTATOR_MODE_ON;
     }
 
-    @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
         PlayerDTO playerDto = playerService.findByTelegramId(context.getUserId())
@@ -44,6 +45,15 @@ public class EnableSpectatorModeHandler implements TextCommandHandler {
         }
         if (!playerGameDto.getState().equals(PlayerGameState.DEFAULT)) {
             throw new UserException("Выполнение операции в данный момент невозможно, так как не закончена предыдущая");
+        }
+        BigDecimal money = playerGameDto.getMoney();
+        if (money.compareTo(BigDecimal.ZERO) > 0) {
+            throw new UserException(String.format("""
+                    Вы не банкрот
+                    Ваш баланс: %s
+                    """, 
+                    money
+            ));
         }
         playerGameDto.setStatus(PlayerGameStatus.DISABLED);
         playerGameDto.setState(null);
@@ -65,7 +75,7 @@ public class EnableSpectatorModeHandler implements TextCommandHandler {
                                 ? toYourselfMessage
                                 : toOtherPlayersMessage,
                         Objects.equals(playerId, context.getUserId())
-                                ? new ReplyKeyboardRemove(true)
+                                ? Keyboards.remove()
                                 : null
                 )).toList();
     }

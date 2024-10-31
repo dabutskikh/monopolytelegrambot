@@ -67,7 +67,7 @@ public class TransferToBankHandler implements TextCommandHandler {
                         Перевод в банк
                         Введите сумму
                         """,
-                new ReplyKeyboardRemove(true)
+                Keyboards.remove()
         ));
     }
 }

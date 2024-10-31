@@ -21,7 +21,6 @@ public class StartGameHandler implements TextCommandHandler {
     private final GameService gameService;
     private final PlayerService playerService;
 
-    @Transactional
     @Override
     public List<Response> execute(CommandContext context) {
         GameDTO game = gameService.startGame(context.getUserId());

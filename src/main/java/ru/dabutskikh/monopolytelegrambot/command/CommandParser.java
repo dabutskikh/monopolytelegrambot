@@ -12,6 +12,7 @@ import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameState;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameStatus;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
+import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
 import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
@@ -55,7 +56,7 @@ public class CommandParser {
             return stateProvider.getByKey(playerGameDto.getState()).execute(
                     GameMoveContext.builder().player(playerDto).playerGame(playerGameDto).command(context).build());
         } catch (UserException e) {
-            return Collections.singletonList(new Response(context.getUserId(), e.getMessage(), new ReplyKeyboardRemove(true)));
+            return Collections.singletonList(new Response(context.getUserId(), e.getMessage(), Keyboards.remove()));
         }
     }
 }
