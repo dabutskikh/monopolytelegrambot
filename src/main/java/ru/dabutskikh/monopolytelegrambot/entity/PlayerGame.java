@@ -7,7 +7,6 @@ import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameState;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameStatus;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "player_game")
@@ -37,5 +36,5 @@ public class PlayerGame {
     PlayerGameState state;
 
     @Column(name = "player_game_money")
-    BigDecimal money;
+    Integer money;
 }

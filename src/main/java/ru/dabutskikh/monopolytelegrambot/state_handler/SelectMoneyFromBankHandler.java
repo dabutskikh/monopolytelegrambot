@@ -11,7 +11,6 @@ import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.TxService;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,11 +28,14 @@ public class SelectMoneyFromBankHandler implements PlayerGameStateHandler {
 
     @Override
     public List<Response> execute(GameMoveContext context) {
-        BigDecimal amount;
+        int amount;
         try {
-            amount = new BigDecimal(context.getCommand().getText());
+            amount = Integer.parseInt(context.getCommand().getText());
+            if (amount < 0) {
+                throw new NumberFormatException();
+            }
         } catch (NumberFormatException e) {
-            throw new UserException("Введено некорректное значение");
+            throw new UserException("Введено некорректное значение суммы. Попробуйте еще раз");
         }
         TxDTO txDto = txService.getById(context.getPlayer().getCurrentTxId());
         txDto.setAmount(amount);

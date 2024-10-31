@@ -2,10 +2,8 @@ package ru.dabutskikh.monopolytelegrambot.command.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
-import ru.dabutskikh.monopolytelegrambot.config.game.GameConfig;
 import ru.dabutskikh.monopolytelegrambot.dto.GameDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
@@ -22,7 +20,6 @@ import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 import ru.dabutskikh.monopolytelegrambot.service.TxService;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,7 +52,7 @@ public class GetForwardMoneyHandler implements TextCommandHandler {
             throw new UserException("Выполнение операции в данный момент невозможно, так как не закончена предыдущая");
         }
         GameDTO gameDto = gameService.getById(playerGameDto.getGameId());
-        BigDecimal updatedMoney = playerGameDto.getMoney().add(gameDto.getForwardMoney());
+        Integer updatedMoney = playerGameDto.getMoney() + gameDto.getForwardMoney();
         playerGameDto.setMoney(updatedMoney);
         playerGameService.update(playerGameDto);
         txService.create(TxDTO.builder()

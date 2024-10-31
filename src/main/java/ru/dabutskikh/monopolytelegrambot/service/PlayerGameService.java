@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerGameDTO;
 import ru.dabutskikh.monopolytelegrambot.entity.Game;
 import ru.dabutskikh.monopolytelegrambot.entity.Player;

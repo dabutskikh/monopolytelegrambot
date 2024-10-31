@@ -5,8 +5,6 @@ import lombok.experimental.FieldDefaults;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameState;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.PlayerGameStatus;
 
-import java.math.BigDecimal;
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @Builder
@@ -19,5 +17,5 @@ public class PlayerGameDTO {
     Long gameId;
     PlayerGameStatus status;
     PlayerGameState state;
-    BigDecimal money;
+    Integer money;
 }

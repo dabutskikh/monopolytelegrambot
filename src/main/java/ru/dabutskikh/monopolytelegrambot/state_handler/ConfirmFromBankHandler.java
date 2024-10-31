@@ -14,7 +14,6 @@ import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 import ru.dabutskikh.monopolytelegrambot.service.TxService;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,8 +48,8 @@ public class ConfirmFromBankHandler implements PlayerGameStateHandler {
 
     private List<Response> commitTx(GameMoveContext context, TxDTO txDto) {
         PlayerGameDTO playerGameDto = context.getPlayerGame();
-        BigDecimal amount = txDto.getAmount();
-        playerGameDto.setMoney(playerGameDto.getMoney().add(amount));
+        Integer amount = txDto.getAmount();
+        playerGameDto.setMoney(playerGameDto.getMoney() + amount);
         playerGameDto.setState(PlayerGameState.DEFAULT);
         PlayerDTO playerDto = context.getPlayer();
         txDto.setStatus(TxStatus.COMPLETED);

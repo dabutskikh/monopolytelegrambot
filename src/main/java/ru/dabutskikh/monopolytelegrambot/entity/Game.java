@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.GameStatus;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "game")
@@ -30,10 +29,10 @@ public class Game {
     GameStatus status;
 
     @Column(name = "game_start_money")
-    BigDecimal startMoney;
+    Integer startMoney;
 
     @Column(name = "game_forward_money")
-    BigDecimal forwardMoney;
+    Integer forwardMoney;
 
     public Game(Long id) {
         this.id = id;

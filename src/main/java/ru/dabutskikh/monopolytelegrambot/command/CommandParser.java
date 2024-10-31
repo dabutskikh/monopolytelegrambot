@@ -2,9 +2,6 @@ package ru.dabutskikh.monopolytelegrambot.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.dabutskikh.monopolytelegrambot.command.handler.TextCommandHandler;
 import ru.dabutskikh.monopolytelegrambot.command.type.TextCommand;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
@@ -17,7 +14,6 @@ import ru.dabutskikh.monopolytelegrambot.response.Response;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 import ru.dabutskikh.monopolytelegrambot.state_handler.GameMoveContext;
-import ru.dabutskikh.monopolytelegrambot.state_handler.PlayerGameStateHandler;
 import ru.dabutskikh.monopolytelegrambot.state_handler.PlayerGameStateProvider;
 
 import java.util.Collections;

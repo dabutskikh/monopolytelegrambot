@@ -14,10 +14,8 @@ import ru.dabutskikh.monopolytelegrambot.service.PlayerGameService;
 import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 import ru.dabutskikh.monopolytelegrambot.service.TxService;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -49,8 +47,8 @@ public class ConfirmToPlayerHandler implements PlayerGameStateHandler {
 
     private List<Response> commitTx(GameMoveContext context, TxDTO txDto) {
         PlayerGameDTO playerGameDto = context.getPlayerGame();
-        BigDecimal amount = txDto.getAmount();
-        playerGameDto.setMoney(playerGameDto.getMoney().subtract(amount));
+        Integer amount = txDto.getAmount();
+        playerGameDto.setMoney(playerGameDto.getMoney() - amount);
         playerGameDto.setState(PlayerGameState.DEFAULT);
         PlayerDTO playerDto = context.getPlayer();
 
@@ -58,7 +56,7 @@ public class ConfirmToPlayerHandler implements PlayerGameStateHandler {
         PlayerDTO targetPlayerDto = playerService.findById(targetPlayerId)
                 .orElseThrow(() -> new UserException("Игрок с ID " + targetPlayerId + " не найден"));
         PlayerGameDTO targetPlayerGameDto = playerGameService.getById(targetPlayerDto.getCurrentPlayerGameId());
-        targetPlayerGameDto.setMoney(targetPlayerGameDto.getMoney().add(amount));
+        targetPlayerGameDto.setMoney(targetPlayerGameDto.getMoney() + amount);
 
         txDto.setStatus(TxStatus.COMPLETED);
         playerGameService.update(playerGameDto);

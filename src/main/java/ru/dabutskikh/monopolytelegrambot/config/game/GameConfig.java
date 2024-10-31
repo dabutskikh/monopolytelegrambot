@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
 @Component
 @PropertySource("classpath:game.properties")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -16,8 +14,8 @@ import java.math.BigDecimal;
 public class GameConfig {
 
     @Value("${game.start-money}")
-    BigDecimal startMoney;
+    Integer startMoney;
 
     @Value("${game.forward-money}")
-    BigDecimal forwardMoney;
+    Integer forwardMoney;
 }

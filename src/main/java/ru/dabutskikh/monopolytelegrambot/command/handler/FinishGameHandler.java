@@ -6,7 +6,6 @@ import ru.dabutskikh.monopolytelegrambot.command.CommandContext;
 import ru.dabutskikh.monopolytelegrambot.command.type.CommandType;
 import ru.dabutskikh.monopolytelegrambot.dto.GameDTO;
 import ru.dabutskikh.monopolytelegrambot.dto.PlayerDTO;
-import ru.dabutskikh.monopolytelegrambot.entity.Game;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.GameStatus;
 import ru.dabutskikh.monopolytelegrambot.exception.UserException;
 import ru.dabutskikh.monopolytelegrambot.keyboard.Keyboards;
@@ -16,8 +15,6 @@ import ru.dabutskikh.monopolytelegrambot.service.PlayerService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor

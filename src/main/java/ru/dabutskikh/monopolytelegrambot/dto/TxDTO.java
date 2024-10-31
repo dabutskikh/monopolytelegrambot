@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.TxStatus;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.TxType;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -23,6 +22,6 @@ public class TxDTO {
     Long ownerId;
     Long sourceId;
     Long targetId;
-    BigDecimal amount;
+    Integer amount;
     LocalDateTime updatedAt;
 }

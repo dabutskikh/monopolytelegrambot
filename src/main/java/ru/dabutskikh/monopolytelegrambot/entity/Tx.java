@@ -8,7 +8,6 @@ import ru.dabutskikh.monopolytelegrambot.entity.enums.TxStatus;
 import ru.dabutskikh.monopolytelegrambot.entity.enums.TxType;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -47,7 +46,7 @@ public class Tx {
     Player target;
 
     @Column(name = "tx_amount")
-    BigDecimal amount;
+    Integer amount;
 
     @Column(name = "tx_updated_at")
     @UpdateTimestamp
