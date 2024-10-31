@@ -17,14 +17,14 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class SelectMoneyToBankHandler implements PlayerGameStateHandler {
+public class SelectMoneyToPlayerHandler implements PlayerGameStateHandler {
 
     private final TxService txService;
     private final PlayerGameService playerGameService;
 
     @Override
     public PlayerGameState getKey() {
-        return PlayerGameState.SELECT_MONEY_AMOUNT_TO_BANK;
+        return PlayerGameState.SELECT_MONEY_AMOUNT_TO_PLAYER;
     }
 
     @Override
@@ -45,8 +45,9 @@ public class SelectMoneyToBankHandler implements PlayerGameStateHandler {
         txDto.setAmount(amount);
         txService.update(txDto);
         PlayerGameDTO playerGameDto = context.getPlayerGame();
-        playerGameDto.setState(PlayerGameState.CONFIRM_TO_BANK);
+        playerGameDto.setState(PlayerGameState.CONFIRM_TO_PLAYER);
         playerGameService.update(playerGameDto);
         return Collections.singletonList(new Response(context.getCommand().getUserId(), "Подтвердите операцию", Keyboards.getConfirmKeyboard()));
+
     }
 }

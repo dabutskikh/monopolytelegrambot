@@ -56,6 +56,15 @@ public class PlayerService {
         );
     }
 
+    public Optional<PlayerDTO> findById(Long playerId) {
+        Optional<Player> playerOpt = playerRepository.findById(playerId);
+        return playerOpt.map(player -> {
+            PlayerDTO dto = new PlayerDTO();
+            BeanUtils.copyProperties(player, dto);
+            return dto;
+        });
+    }
+
     public PlayerDTO update(PlayerDTO dto) {
         Player entity = playerRepository.findById(dto.getId())
                 .orElseThrow(() -> new UserException("Игрока с указанным идентификатором не существует"));
