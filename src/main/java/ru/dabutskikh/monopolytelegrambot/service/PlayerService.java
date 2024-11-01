@@ -30,7 +30,7 @@ public class PlayerService {
         String telegramUsername = dto.getUsername() != null
                 ? dto.getUsername()
                 : String.valueOf(dto.getTelegramId());
-        String username = Stream.of(dto.getFirstName(), dto.getLastName(), telegramUsername)
+        String username = Stream.of(dto.getFirstName(), telegramUsername)
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining(" "));
         entity.setUsername(username);
