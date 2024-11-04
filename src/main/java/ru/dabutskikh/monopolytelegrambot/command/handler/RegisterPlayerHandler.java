@@ -19,6 +19,11 @@ public class RegisterPlayerHandler implements TextCommandHandler {
     private final PlayerService playerService;
 
     @Override
+    public CommandType getKey() {
+        return CommandType.REGISTER_PLAYER;
+    }
+
+    @Override
     public List<Response> execute(CommandContext context) {
         PlayerDTO player = PlayerDTO.builder()
                 .telegramId(context.getUserId())
@@ -26,12 +31,10 @@ public class RegisterPlayerHandler implements TextCommandHandler {
                 .lastName(context.getLastName())
                 .firstName(context.getFirstName())
                 .build();
-        playerService.create(player);
-        return Collections.singletonList(new Response(context.getUserId(), "Вы зарегистированы!", Keyboards.remove()));
-    }
-
-    @Override
-    public CommandType getKey() {
-        return CommandType.REGISTER_PLAYER;
+        PlayerDTO dto = playerService.create(player);
+        return Collections.singletonList(new Response(context.getUserId(), String.format("""
+                Вы зарегистрированы!
+                Ваш логин: %s
+                """, dto.getUsername()), Keyboards.remove()));
     }
 }

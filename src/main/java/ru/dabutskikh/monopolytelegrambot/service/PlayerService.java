@@ -23,7 +23,7 @@ public class PlayerService {
 
     private final PlayerRepository playerRepository;
 
-    public void create(PlayerDTO dto) {
+    public PlayerDTO create(PlayerDTO dto) {
         checkNotExistsPlayerByTelegramId(dto.getTelegramId());
         Player entity = new Player();
         entity.setTelegramId(dto.getTelegramId());
@@ -33,10 +33,12 @@ public class PlayerService {
         String username = Stream.of(dto.getFirstName(), telegramUsername)
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining(" "));
+        dto.setUsername(username);
         entity.setUsername(username);
         entity.setLastName(dto.getLastName());
         entity.setFirstName(dto.getFirstName());
         playerRepository.saveAndFlush(entity);
+        return dto;
     }
 
     public void checkNotExistsPlayerByTelegramId(Long telegramId) {
@@ -58,6 +60,15 @@ public class PlayerService {
 
     public Optional<PlayerDTO> findById(Long playerId) {
         Optional<Player> playerOpt = playerRepository.findById(playerId);
+        return playerOpt.map(player -> {
+            PlayerDTO dto = new PlayerDTO();
+            BeanUtils.copyProperties(player, dto);
+            return dto;
+        });
+    }
+
+    public Optional<PlayerDTO> findByUsername(String username) {
+        Optional<Player> playerOpt = playerRepository.findByUsername(username);
         return playerOpt.map(player -> {
             PlayerDTO dto = new PlayerDTO();
             BeanUtils.copyProperties(player, dto);
@@ -94,4 +105,6 @@ public class PlayerService {
                 })
                 .toList();
     }
+
+
 }

@@ -16,6 +16,8 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
     List<Player> findByCurrentGameId(Long gameId);
 
+    Optional<Player> findByUsername(String username);
+
     @Query("""
         select p
         from Player p
